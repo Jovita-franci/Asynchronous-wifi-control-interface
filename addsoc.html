@@ -1,0 +1,119 @@
+<!DOCTYPEhtml>
+<htmlxmlns="http://www.w3.org/1999/xhtml">
+<head>
+<scriptsrc="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+<scriptsrc='/socket.io/socket.io.js'></script>
+<metacharset="utf-8">
+<metaname="viewport"content="width=device-width, initial-scale=1">
+<linkrel="stylesheet"href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/b
+ootstrap.min.css">
+<scriptsrc="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></scr
+ipt>
+<scriptsrc="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+</script>
+<script>
+var socket = io();
+varssidclicked;
+varssid = [];
+var button = [];
+var index;
+var i;
+var disconnect;
+
+socket.emit('scannetworks', "");
+
+41
+
+socket.on('scanresults', function (results) {
+console.log(results);
+console.log(results['msg']);
+console.log(results['networks']);
+$.each(results.networks, function (index, eachnetwork) {
+$(document).ready(function () {
+console.log(Array.length);
+for (i = 0; i <Array.length; i++) {
+ssid[i] = eachnetwork['ssid'];
+
+button[i] = ' <button type="button" class="btnbtn-default btn-lgbtn-block" data-
+toggle="modal" data-target="#myModal"></button>'
+
+$("#my").append($(button[i]).text(ssid[i]));
+}
+$('button[class="btnbtn-default btn-lgbtn-block"]').click(function ()
+{
+ssidclicked = $(this).text();
+});
+});
+});
+$("#connect").click(function () {
+varpwd = $("#pwd").val();
+varap = {
+ssid: ssidclicked,
+password: pwd
+};
+socket.emit('connectnet', ap);
+socket.on('connectresult', function (results) {
+42
+
+if (results.success == true) {
+alert("Connected Successfully to " + ssidclicked);
+var display = "<h3> Connected Successfully to "+ssidclicked+"</h3> "
+
+disconnect = ' <button type="button" id="disconnect" class="btnbtn-default btn-
+md">Disconnect</button>'
+
+$("#my").append(display+disconnect);
+}
+else {
+alert("Password Incorrect");
+}
+$("#disconnect").click(function () {
+alert("Disconnected from "+ssidclicked);
+socket.emit('disconnectnet', ssidclicked);
+socket.on('disconnect', function (results) {
+console.log(results);
+$('#disconnect').hide();
+
+});
+});
+});
+});
+});
+</script>
+</head>
+<body>
+<divclass="container">
+<divid="my">
+
+43
+
+<h2><centre>Asynchronous WiFi Control Interface(AWCI)</centre></h2>
+<!-- Modal -->
+<divclass="modal fade"id="myModal"role="dialog">
+<divclass="modal-dialog">
+<!-- Modal content-->
+<divclass="modal-content">
+<divclass="modal-header">
+
+<buttonid="close"type="button"class="close"data-
+dismiss="modal">&times;</button>
+
+<h2><labelclass="modal-title">Connect to WiFi..... </label></h2>
+</div>
+<inputid="pwd"type="password"placeholder="Password"size="80"/>
+<divclass="modal-footer">
+
+<buttontype="button"id="connect"class="btnbtn-default"data-
+dismiss="modal">Connect</button>
+
+<buttontype="button"class="btnbtn-default"data-
+dismiss="modal">Cancel</button>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
